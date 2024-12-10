@@ -12,5 +12,5 @@ The bivariate map uses the chroma.js library for color scales, and the leaflet.j
 
 **Data Provided by:**
 
-U.S. Presidents Turkey Pardons data sourced from public datasets (e.g., Wikipedia, historical records) and created in ArcGIS Pro
-U.S. State boundaries in GeoJSON format sourced from [Open Data Portals]
+- U.S. Presidents Turkey Pardons data sourced from public datasets (e.g., Wikipedia, historical records) and created in ArcGIS Pro
+- U.S. State boundaries in GeoJSON format sourced from [Open Data Portals]
