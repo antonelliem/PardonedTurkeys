@@ -105,15 +105,6 @@
         };
     }
 
-    // Add choropleth layer
-    var stateLayer = L.geoJson.ajax('Data/States.geojson', {
-        style: style,
-        onEachFeature: function (feature, layer) {
-            layer.bindPopup('<b>State:</b> ' + feature.properties.State_Name + '<br>' +
-                            '<b>Turkeys Pardoned:</b> ' + feature.properties.Join_Count);
-        }
-    }).addTo(map);
-
     // Add point layer for turkey origins
     var turkeyLayer = L.geoJson.ajax('Data/Turkeys.geojson', {
         pointToLayer: function (feature, latlng) {
@@ -124,7 +115,6 @@
                 weight: 1,
                 opacity: 1,
                 fillOpacity: 0.8
-                zIndex: 1000 //Set a higher z-index for points
             });
         },
         onEachFeature: function (feature, layer) {
@@ -136,6 +126,15 @@
 
 attribution:'National Thanksgiving Turkey Presentation &copy; Wikipedia | Base Map &copy; OpenStreetMap | Map: Ethan Antonelli'
 
+    }).addTo(map);
+
+    // Add choropleth layer
+    var stateLayer = L.geoJson.ajax('Data/States.geojson', {
+        style: style,
+        onEachFeature: function (feature, layer) {
+            layer.bindPopup('<b>State:</b> ' + feature.properties.State_Name + '<br>' +
+                            '<b>Turkeys Pardoned:</b> ' + feature.properties.Join_Count);
+        }
     }).addTo(map);
 
     // Add legend
