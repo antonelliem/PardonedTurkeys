@@ -4,11 +4,11 @@ This map visualizes the origins of turkeys pardoned by U.S. Presidents from the 
 The bivariate map uses the chroma.js library for color scales, and the leaflet.js library for interactive mapping. The Leaflet popup binds details of each turkey, such as the president who pardoned it, its year of pardoning, and the state of origin. A custom Leaflet control is used to display a legend showing the choropleth color palette for turkey pardons per state.
 
 ## Packages, Stylesheets, and Data
-Leaflet.js (for map creation and customization)
-Chroma.js (for color conversions and color scales)
-FontAwesome (for custom icons and markers)
-Leaflet-ajax (for loading GeoJSON data)
-Google Fonts (for styling text)
+- **Leaflet.js** (for map creation and customization)
+- **Chroma.js** (for color conversions and color scales)
+- **FontAwesome** (for custom icons and markers)
+- **Leaflet-ajax** (for loading GeoJSON data)
+- **Google Fonts** (for styling text)
 
 **Data Provided by:**
 
