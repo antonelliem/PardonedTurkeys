@@ -11,6 +11,5 @@ Leaflet-ajax (for loading GeoJSON data)
 Google Fonts (for styling text)
 
 **Data Provided by:**
-
 U.S. Presidents Turkey Pardons data sourced from public datasets (e.g., Wikipedia, historical records) and created in ArcGIS Pro
 U.S. State boundaries in GeoJSON format sourced from [Open Data Portals]
