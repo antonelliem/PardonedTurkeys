@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Pardoned Turkeys by State</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.0/dist/leaflet.css"/>
+    <style>
+        html, body, #map { width: 100%; height: 100%; margin: 0; background: #fff; }
+
+        /* Title box styling */
+        #title-box {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-family: 'Roboto', sans-serif;
+            z-index: 1000;
+        }
+
+        #title-box h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        #title-box p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .legend {
+            line-height: 20px;
+            font-size: 14px;
+            font-family: 'Roboto', sans-serif;
+            width: 180px;
+            color: #333;
+            padding: 6px 8px;
+            background: white;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+
+        .legend i {
+            width: 20px;
+            height: 20px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.9;
+        }
+
+        .legend p {
+            font-size: 12px;
+            margin: 0;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/leaflet@1.7.0/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-ajax/2.1.0/leaflet.ajax.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
+</head>
+<body>
+<!-- Title Box -->
+<div id="title-box">
+    <h1>Pardoned Turkeys by State</h1>
+    <p>A map showing the origins of every turkey pardoned by U.S. presidents, from the Clinton administration to the present.</p>
+</div>
+
+<div id="map"></div>
+
+<script>
+// Initialize the map
+var map = L.map('map', {
+    center: [39.8283, -98.5795], // Center of the US
+    zoom: 5
+});
+
+// Add a basemap
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+// Define colors for the choropleth
+var colors = chroma.scale(['#fff5eb', '#fd8d3c', '#e31a1c', '#67000d']).mode('lch').colors(5);
+
+function getColor(d) {
+    return d > 8 ? colors[4] :
+           d > 5 ? colors[3] :
+           d > 3 ? colors[2] :
+           d > 0  ? colors[1] :
+                    colors[0];
+}
+
+function style(feature) {
+    return {
+        fillColor: getColor(feature.properties.Join_Count),
+        weight: 1,
+        opacity: 1,
+        color: 'white',
+        dashArray: '3',
+        fillOpacity: 0.7
+    };
+}
+
+// Add choropleth layer (States)
+var stateLayer = L.geoJson.ajax('Data/States.geojson', {
+    style: style,
+    onEachFeature: function (feature, layer) {
+        layer.bindPopup('<b>State:</b> ' + feature.properties.State_Name + '<br>' +
+                        '<b>Turkeys Pardoned:</b> ' + feature.properties.Join_Count);
+    }
+}).addTo(map);
+
+// Add point layer for turkey origins
+var turkeyLayer = L.geoJson.ajax('Data/Turkeys.geojson', {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, {
+            radius: 6,
+            fillColor: '#fc8d59',
+            color: '#b30000',
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8,
+            zIndex: 1000  // Points are explicitly set to be on top
+        });
+    },
+    onEachFeature: function (feature, layer) {
+        layer.bindPopup('<b>Name:</b> ' + feature.properties.Name + '<br>' +
+                        '<b>Year:</b> ' + feature.properties.PardonedYe + '<br>' +
+                        '<b>President:</b> ' + feature.properties.President + '<br>' +
+                        '<b>State:</b> ' + feature.properties.State);
+    },
+
+attribution:'National Thanksgiving Turkey Presentation &copy; Wikipedia | Base Map &copy; OpenStreetMap | Map: Ethan Antonelli'
+
+}).addTo(map);
+
+// Ensure the points layer is always on top by bringing it to the front after adding
+turkeyLayer.bringToFront(); // Bring points layer to the front after initialization
+
+// Add layer control to toggle visibility
+L.control.layers({
+    'States Layer': stateLayer,
+    'Turkey Points': turkeyLayer
+}).addTo(map);
+
+// Add legend
+var legend = L.control({position: 'bottomright'});
+
+legend.onAdd = function (map) {
+    var div = L.DomUtil.create('div', 'legend'),
+        grades = [1, 3, 5, 10],
+        labels = [];
+
+    div.innerHTML = '<b>Turkeys Pardoned</b><br>';
+
+    for (var i = 0; i < grades.length; i++) {
+        div.innerHTML +=
+            '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+            grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+    }
+
+    return div;
+};
+
+legend.addTo(map);
+
+</script>
+</body>
+</html>
